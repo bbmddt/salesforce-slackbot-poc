@@ -1,0 +1,59 @@
+name: Salesforce Validate
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salesforce-validate-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate against sandbox
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SF_DISABLE_LOG_FILE: "true"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli@2.141.6
+
+      - name: Authenticate Salesforce sandbox
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+        shell: bash
+        run: |
+          if [[ -z "${SFDX_AUTH_URL:-}" ]]; then
+            echo "SFDX_AUTH_URL repository secret is not configured." >&2
+            exit 1
+          fi
+
+          auth_file="$(mktemp)"
+          trap 'rm -f "$auth_file"' EXIT
+          printf '%s' "$SFDX_AUTH_URL" > "$auth_file"
+
+          sf org login sfdx-url \
+            --sfdx-url-file "$auth_file" \
+            --alias sandbox \
+            --set-default
+
+      - name: Validate Salesforce metadata
+        run: |
+          sf project deploy start \
+            --source-dir force-app \
+            --target-org sandbox \
+            --dry-run \
+            --test-level RunLocalTests \
+            --wait 20
