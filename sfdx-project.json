@@ -1,0 +1,12 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app",
+      "default": true
+    }
+  ],
+  "name": "salesforce-slackbot-poc",
+  "namespace": "",
+  "sfdcLoginUrl": "https://orgfarm-093e57a45d.my.salesforce.com",
+  "sourceApiVersion": "67.0"
+}
