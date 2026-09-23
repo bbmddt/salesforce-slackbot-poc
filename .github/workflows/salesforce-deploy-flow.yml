@@ -1,0 +1,53 @@
+name: Salesforce Deploy Flow
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: salesforce-deploy-flow
+  cancel-in-progress: false
+
+env:
+  SF_DISABLE_LOG_FILE: "true"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout triggering commit
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli@2.141.6
+
+      - name: Deploy Flow to sandbox
+        shell: bash
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+        run: |
+          if [ -z "${SFDX_AUTH_URL}" ]; then
+            echo "SFDX_AUTH_URL secret is empty" >&2
+            exit 1
+          fi
+
+          AUTH_FILE="$(mktemp)"
+          trap 'rm -f "${AUTH_FILE}"' EXIT INT TERM
+
+          printf '%s' "${SFDX_AUTH_URL}" > "${AUTH_FILE}"
+
+          sf org login sfdx-url --sfdx-url-file "${AUTH_FILE}" --alias sandbox --set-default
+
+          sf project deploy start \
+            --metadata "Flow:Slackbot_Hello_World" \
+            --target-org sandbox \
+            --wait 20 \
+            --test-level NoTestRun
