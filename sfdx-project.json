@@ -7,6 +7,6 @@
   ],
   "name": "salesforce-slackbot-poc",
   "namespace": "",
-  "sfdcLoginUrl": "https://test.salesforce.com",
+  "sfdcLoginUrl": "https://orgfarm-093e57a45d.my.salesforce.com",
   "sourceApiVersion": "67.0"
 }

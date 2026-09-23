@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   validate:
-    name: Validate against sandbox
+    name: Validate against target org
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -30,7 +30,7 @@ jobs:
       - name: Install Salesforce CLI
         run: npm install --global @salesforce/cli@2.141.6
 
-      - name: Authenticate Salesforce sandbox
+      - name: Authenticate Salesforce org
         env:
           SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
         shell: bash
