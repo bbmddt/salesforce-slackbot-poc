@@ -22,7 +22,7 @@ private class OpportunityClosedWonTriggerTest {
 
         Assert.areEqual(1, followUpTasks.size(), 'One follow-up task should be created.');
         Assert.areEqual('Follow up after Closed Won', followUpTasks[0].Subject);
-        Assert.areEqual(opportunity.OwnerId, followUpTasks[0].OwnerId);
+        Assert.areEqual(UserInfo.getUserId(), followUpTasks[0].OwnerId);
         Assert.areEqual('Not Started', followUpTasks[0].Status);
         Assert.areEqual('Normal', followUpTasks[0].Priority);
     }

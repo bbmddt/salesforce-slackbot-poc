@@ -55,5 +55,6 @@ jobs:
             --source-dir force-app \
             --target-org sandbox \
             --dry-run \
-            --test-level RunLocalTests \
+            --test-level RunSpecifiedTests \
+            --tests OpportunityClosedWonTriggerTest \
             --wait 20
