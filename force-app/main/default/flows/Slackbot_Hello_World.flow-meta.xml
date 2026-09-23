@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <interviewLabel>Slackbot Hello World {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Slackbot Hello World</label>
+    <processType>Flow</processType>
+    <status>Draft</status>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Slackbot_Hello_Screen</targetReference>
+        </connector>
+    </start>
+    <screens>
+        <name>Slackbot_Hello_Screen</name>
+        <label>Slackbot Hello Screen</label>
+        <locationX>50</locationX>
+        <locationY>150</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+        <fields>
+            <name>Hello_Display_Text</name>
+            <fieldType>DisplayText</fieldType>
+            <fieldText>Hello from Slackbot development PoC</fieldText>
+            <isRequired>false</isRequired>
+        </fields>
+    </screens>
+</Flow>
