@@ -151,10 +151,8 @@
             <name>Input_Email</name>
             <dataType>String</dataType>
             <fieldText>Email</fieldText>
-            <fieldType>ComponentInstance</fieldType>
-            <extensionName>flowruntime:email</extensionName>
+            <fieldType>InputField</fieldType>
             <isRequired>false</isRequired>
-            <storeOutputAutomatically>true</storeOutputAutomatically>
         </fields>
         <fields>
             <name>Input_Phone</name>
