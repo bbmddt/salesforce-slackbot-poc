@@ -176,7 +176,6 @@
             </defaultValue>
             <fieldText>Create Follow-up Task</fieldText>
             <fieldType>InputField</fieldType>
-            <isRequired>false</isRequired>
         </fields>
         <showFooter>true</showFooter>
     </screens>
