@@ -1,0 +1,45 @@
+name: Salesforce Deploy - Account Contact Quick Create Flow
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    name: Deploy Account_Contact_Quick_Create Flow to sandbox
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Authenticate Salesforce org
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+        run: |
+          if [ -z "$SFDX_AUTH_URL" ]; then
+            echo "SFDX_AUTH_URL secret is not set"
+            exit 1
+          fi
+
+          auth_file="$(mktemp)"
+          trap 'rm -f "$auth_file"' EXIT
+          printf '%s' "$SFDX_AUTH_URL" > "$auth_file"
+
+          sf org login sfdx-url \
+            --sfdx-url-file "$auth_file" \
+            --alias sandbox \
+            --set-default
+
+      - name: Deploy Account_Contact_Quick_Create Flow only
+        run: |
+          sf project deploy start \
+            --metadata "Flow:Account_Contact_Quick_Create" \
+            --target-org sandbox \
+            --wait 20
