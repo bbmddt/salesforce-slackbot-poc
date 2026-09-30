@@ -27,6 +27,18 @@
         <expression>TODAY() + 2</expression>
     </formulas>
 
+    <textTemplates>
+        <name>Text_FollowUpTaskStatus</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>已同步建立 follow-up Task。</text>
+    </textTemplates>
+
+    <textTemplates>
+        <name>Text_NoFollowUpTaskStatus</name>
+        <isViewedAsPlainText>true</isViewedAsPlainText>
+        <text>未建立 follow-up Task。</text>
+    </textTemplates>
+
     <recordLookups>
         <name>Get_Account</name>
         <label>Get Account</label>
@@ -72,6 +84,32 @@
                 <targetReference>Screen_ContactInput</targetReference>
             </connector>
             <label>Found</label>
+        </rules>
+    </decisions>
+
+    <decisions>
+        <name>Decision_CreateTask</name>
+        <label>Create Follow-up Task?</label>
+        <locationX>176</locationX>
+        <locationY>600</locationY>
+        <defaultConnector>
+            <targetReference>Screen_Success</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Task</defaultConnectorLabel>
+        <rules>
+            <name>Yes_CreateTask</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Screen_ContactInput.Input_CreateFollowUpTask</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Create_Task</targetReference>
+            </connector>
+            <label>Yes</label>
         </rules>
     </decisions>
 
@@ -189,18 +227,6 @@
         <showFooter>true</showFooter>
     </screens>
 
-    <textTemplates>
-        <name>Text_FollowUpTaskStatus</name>
-        <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>已同步建立 follow-up Task。</text>
-    </textTemplates>
-
-    <textTemplates>
-        <name>Text_NoFollowUpTaskStatus</name>
-        <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>未建立 follow-up Task。</text>
-    </textTemplates>
-
     <recordCreates>
         <name>Create_Contact</name>
         <label>Create Contact</label>
@@ -251,32 +277,6 @@
         <object>Contact</object>
         <storeOutputAutomatically>true</storeOutputAutomatically>
     </recordCreates>
-
-    <decisions>
-        <name>Decision_CreateTask</name>
-        <label>Create Follow-up Task?</label>
-        <locationX>176</locationX>
-        <locationY>600</locationY>
-        <defaultConnector>
-            <targetReference>Screen_Success</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>No Task</defaultConnectorLabel>
-        <rules>
-            <name>Yes_CreateTask</name>
-            <conditionLogic>and</conditionLogic>
-            <conditions>
-                <leftValueReference>Screen_ContactInput.Input_CreateFollowUpTask</leftValueReference>
-                <operator>EqualTo</operator>
-                <rightValue>
-                    <booleanValue>true</booleanValue>
-                </rightValue>
-            </conditions>
-            <connector>
-                <targetReference>Create_Task</targetReference>
-            </connector>
-            <label>Yes</label>
-        </rules>
-    </decisions>
 
     <recordCreates>
         <name>Create_Task</name>
