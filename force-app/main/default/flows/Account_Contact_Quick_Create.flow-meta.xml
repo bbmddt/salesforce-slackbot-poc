@@ -27,18 +27,6 @@
         <expression>TODAY() + 2</expression>
     </formulas>
 
-    <textTemplates>
-        <name>Text_FollowUpTaskStatus</name>
-        <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>已同步建立 follow-up Task。</text>
-    </textTemplates>
-
-    <textTemplates>
-        <name>Text_NoFollowUpTaskStatus</name>
-        <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>未建立 follow-up Task。</text>
-    </textTemplates>
-
     <recordLookups>
         <name>Get_Account</name>
         <label>Get Account</label>
@@ -93,7 +81,7 @@
         <locationX>176</locationX>
         <locationY>600</locationY>
         <defaultConnector>
-            <targetReference>Screen_Success</targetReference>
+            <targetReference>Screen_Success_NoTask</targetReference>
         </defaultConnector>
         <defaultConnectorLabel>No Task</defaultConnectorLabel>
         <rules>
@@ -196,16 +184,32 @@
     </screens>
 
     <screens>
-        <name>Screen_Success</name>
-        <label>Success</label>
-        <locationX>176</locationX>
+        <name>Screen_Success_NoTask</name>
+        <label>Success - No Follow-up Task</label>
+        <locationX>350</locationX>
         <locationY>720</locationY>
         <allowBack>false</allowBack>
         <allowFinish>true</allowFinish>
         <allowPause>false</allowPause>
         <fields>
-            <name>Text_Success</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;Contact 已成功建立。&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;{!Text_FollowUpTaskStatus}&lt;/p&gt;</fieldText>
+            <name>Text_Success_NoTask</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Contact 已成功建立。&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;未建立 follow-up Task。&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+    </screens>
+
+    <screens>
+        <name>Screen_Success_TaskCreated</name>
+        <label>Success - Task Created</label>
+        <locationX>50</locationX>
+        <locationY>840</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Text_Success_TaskCreated</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Contact 已成功建立。&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;follow-up Task 也已建立。&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -213,7 +217,7 @@
 
     <screens>
         <name>Screen_Error</name>
-        <label>Error</label>
+        <label>Error - Contact Create Failed</label>
         <locationX>450</locationX>
         <locationY>600</locationY>
         <allowBack>false</allowBack>
@@ -221,7 +225,23 @@
         <allowPause>false</allowPause>
         <fields>
             <name>Text_Error</name>
-            <fieldText>&lt;p&gt;&lt;strong&gt;處理過程中發生錯誤，未能完成建立。&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;錯誤詳情：{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Contact 建立失敗，沒有成功完成建立。&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;錯誤詳情：{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+    </screens>
+
+    <screens>
+        <name>Screen_Error_TaskFault</name>
+        <label>Error - Follow-up Task Failed</label>
+        <locationX>50</locationX>
+        <locationY>960</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Text_Error_TaskFault</name>
+            <fieldText>&lt;p&gt;&lt;strong&gt;Contact 可能已成功建立，但 follow-up Task 建立失敗。&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;請先確認 Contact 是否存在，再決定是否重試。&lt;/p&gt;&lt;p&gt;錯誤詳情：{!$Flow.FaultMessage}&lt;/p&gt;</fieldText>
             <fieldType>DisplayText</fieldType>
         </fields>
         <showFooter>true</showFooter>
@@ -284,10 +304,10 @@
         <locationX>50</locationX>
         <locationY>720</locationY>
         <connector>
-            <targetReference>Screen_Success</targetReference>
+            <targetReference>Screen_Success_TaskCreated</targetReference>
         </connector>
         <faultConnector>
-            <targetReference>Screen_Error</targetReference>
+            <targetReference>Screen_Error_TaskFault</targetReference>
         </faultConnector>
         <inputAssignments>
             <field>Subject</field>
