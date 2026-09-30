@@ -1,0 +1,65 @@
+name: Salesforce Retrieve - Account Contact Quick Create Flow
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  retrieve:
+    name: Retrieve Account_Contact_Quick_Create Flow from sandbox
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Salesforce CLI
+        run: npm install --global @salesforce/cli
+
+      - name: Authenticate Salesforce org
+        env:
+          SFDX_AUTH_URL: ${{ secrets.SFDX_AUTH_URL }}
+        run: |
+          if [ -z "$SFDX_AUTH_URL" ]; then
+            echo "SFDX_AUTH_URL secret is not set"
+            exit 1
+          fi
+
+          auth_file="$(mktemp)"
+          trap 'rm -f "$auth_file"' EXIT
+          printf '%s' "$SFDX_AUTH_URL" > "$auth_file"
+
+          sf org login sfdx-url \
+            --sfdx-url-file "$auth_file" \
+            --alias sandbox \
+            --set-default
+
+      - name: Retrieve Account_Contact_Quick_Create Flow only
+        run: |
+          sf project retrieve start \
+            --metadata "Flow:Account_Contact_Quick_Create" \
+            --target-org sandbox
+
+      - name: Show retrieved file diff
+        run: |
+          git diff --stat -- force-app/main/default/flows/Account_Contact_Quick_Create.flow-meta.xml
+          git diff -- force-app/main/default/flows/Account_Contact_Quick_Create.flow-meta.xml
+
+      - name: Commit retrieved metadata back to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git diff --quiet -- force-app/main/default/flows/Account_Contact_Quick_Create.flow-meta.xml; then
+            echo "No changes detected after retrieve; nothing to commit."
+            exit 0
+          fi
+
+          git add force-app/main/default/flows/Account_Contact_Quick_Create.flow-meta.xml
+          git commit -m "Sync account contact flow from sandbox after Flow Builder field re-selection"
+          git push origin HEAD:main
